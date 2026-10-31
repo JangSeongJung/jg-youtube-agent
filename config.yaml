@@ -1,0 +1,25 @@
+profiles:
+  - { name: 유튜브1, dir: 'D:\Cowork\jg-youtube-agent\profiles\youtube1' }
+  - { name: 유튜브2, dir: 'D:\Cowork\jg-youtube-agent\profiles\youtube2' }
+  - { name: 유튜브3, dir: 'D:\Cowork\jg-youtube-agent\profiles\youtube3' }
+profile_assignment: round_robin   # round_robin | manual
+
+comment: { min_chars: 40, max_chars: 120, brand: 운명원 }
+limits: { daily_max_comments: 10 }
+search: { query: 연애, region: KR, language: ko, max_results: 20 }
+allowed_channel_ids: []   # 비어있으면 제한 없음
+
+# "뜨기 직전 영상 찾기" 조건 (목록 + 초안까지만, 자동 게시 없음)
+rising: { hours: 48, min_views: 1000, max_views: 5000, min_views_per_hour: 150, pages: 3 }  # pages: 검색 페이지 수(페이지당 할당량 100)
+
+llm:
+  provider: anthropic           # anthropic | openai
+  model: claude-opus-5-5
+
+# 오프라인 시연판: 게시 대상은 로컬 모의 시청 페이지(/mock/watch)로 고정
+posting:
+  target: mock
+  typing_delay_ms: [60, 180]
+  close_after_sec: 3
+
+chrome_path: 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'

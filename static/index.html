@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>유튜브 댓글 에이전트</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/static/style.css?v=4">
+</head>
+<body>
+<header>
+  <div class="head-row">
+    <span class="tile lg"><i data-icon="message"></i></span>
+    <div>
+      <h1>유튜브 댓글 에이전트 <span class="badge">오프라인 시연판</span></h1>
+      <p class="guide">왼쪽부터 순서대로 영상 고르기 → 댓글 초안 확인 → 댓글 달기를 진행하세요.</p>
+    </div>
+    <div class="pills">
+      <span class="pill" id="pillTodayWrap"><i data-icon="calendar"></i><span id="pillToday">오늘 게시 -/-</span></span>
+      <span class="pill"><i data-icon="cpu"></i><span id="pillModel"></span></span>
+    </div>
+  </div>
+  <div id="keyWarn" class="warn" hidden></div>
+</header>
+
+<main class="cols">
+  <!-- ① -->
+  <section class="col" id="col1">
+    <div class="col-head">
+      <span class="tile"><i data-icon="play"></i></span>
+      <div><span class="step">STEP 1</span><h2>영상 고르기</h2></div>
+    </div>
+    <p class="hint">[영상 불러오기]를 누르면 최신 '<b id="q">연애</b>' 영상이 나옵니다. 하나를 클릭하면 바로 초안을 만듭니다.</p>
+    <div class="row">
+      <button id="btnLoad" class="primary"><i data-icon="refresh"></i><span class="lbl">영상 불러오기</span></button>
+      <button id="btnRising"><i data-icon="trending"></i><span class="lbl">뜨기 직전 영상 찾기</span></button>
+    </div>
+    <p class="hint small" id="risingHint"></p>
+    <div class="row">
+      <div class="input-ico"><i data-icon="link"></i><input id="link" placeholder="유튜브 링크 붙여넣기 (watch?v= / youtu.be / shorts)"></div>
+      <button id="btnLink">선택</button>
+    </div>
+    <div id="listTitle" class="list-title"></div>
+    <div id="list" class="list"><p class="empty">아직 불러온 영상이 없습니다.</p></div>
+  </section>
+
+  <!-- ② -->
+  <section class="col" id="col2">
+    <div class="col-head">
+      <span class="tile"><i data-icon="pen"></i></span>
+      <div><span class="step">STEP 2</span><h2>댓글 초안 확인</h2></div>
+    </div>
+    <p class="hint">영상을 고르면 AI가 영상 속 연애 고민을 정리하고 댓글 초안을 씁니다. 초안은 직접 고칠 수 있어요.</p>
+    <div id="draftEmpty" class="empty">왼쪽에서 영상을 먼저 골라주세요.</div>
+    <div id="loading2" class="loading" hidden><span class="spin"></span>AI가 영상을 분석하고 초안을 쓰는 중… (10~30초)</div>
+    <div id="draftBox" hidden>
+      <div id="selVideo" class="sel"></div>
+      <div class="field"><label>영상 속 연애 고민 한 줄</label><div id="worry" class="worry"></div></div>
+      <div class="field"><label>AI가 짚은 장면</label><ul id="moments"></ul></div>
+      <div class="field">
+        <label>댓글 초안 <span id="count" class="count"></span></label>
+        <textarea id="comment" rows="5"></textarea>
+        <div id="checks" class="checks"></div>
+      </div>
+      <div class="row">
+        <button id="btnRegen"><i data-icon="rotate"></i><span>다시 쓰기</span></button>
+        <button id="btnReanalyze" class="ghost"><i data-icon="search"></i><span>영상 다시 분석</span></button>
+      </div>
+      <details><summary>생성 과정 보기</summary><ol id="attempts"></ol></details>
+    </div>
+  </section>
+
+  <!-- ③ -->
+  <section class="col" id="col3">
+    <div class="col-head">
+      <span class="tile"><i data-icon="send"></i></span>
+      <div><span class="step">STEP 3</span><h2>댓글 달기</h2></div>
+    </div>
+    <p class="hint">[댓글 달기]를 누르면 계정(크롬 프로필) 창이 열리고, 2단계의 댓글을 한 글자씩 입력해 게시합니다. 끝나면 3초 뒤 창이 닫힙니다.</p>
+    <div class="field">
+      <label class="toggle"><input type="checkbox" id="autoAssign"><span class="switch"></span> 계정 자동 순환 배정</label>
+      <div class="input-ico"><i data-icon="user"></i><select id="profile"></select></div>
+      <div class="hint small" id="assignHint"></div>
+    </div>
+    <button id="btnPost" class="primary big" disabled><i data-icon="send"></i><span>댓글 달기</span></button>
+    <div id="postWhy" class="hint">2단계에서 초안을 먼저 만들어 주세요.</div>
+    <ol id="steps" class="steps" hidden></ol>
+    <div id="postResult"></div>
+  </section>
+</main>
+
+<!-- 기록 -->
+<section class="log">
+  <div class="log-head">
+    <span class="tile"><i data-icon="clock"></i></span>
+    <h2>게시 기록</h2>
+    <span class="hint">최근 순 · 영상당 1개, 하루 최대 <b id="logMax">-</b>건 (KST 기준)</span>
+    <a class="btn" href="/api/log.csv"><i data-icon="download"></i>CSV 내보내기</a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>시각</th><th>영상</th><th>계정</th><th>댓글</th><th>상태</th><th>사유 / 링크</th></tr></thead>
+      <tbody id="logBody"><tr><td colspan="6" class="empty">아직 기록이 없습니다.</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<script src="/static/app.js?v=3"></script>
+</body>
+</html>

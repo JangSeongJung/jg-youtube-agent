@@ -1,0 +1,12 @@
+# 비밀값
+.env
+
+# 로컬 데이터 / 크롬 프로필
+data/
+profiles/
+
+# 환경
+.venv/
+.pw-browsers/
+__pycache__/
+*.pyc
