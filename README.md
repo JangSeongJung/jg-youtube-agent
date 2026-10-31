@@ -32,10 +32,10 @@ powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
 
 `setup.ps1`이 하는 일:
 - 프로젝트 안에 `.venv` 가상환경을 만들고 `requirements.txt` 패키지 설치
-- pip 캐시와 Playwright 경로를 D 드라이브로 지정 (C 드라이브 용량 절약)
+- pip 캐시와 Playwright 경로를 프로젝트 폴더 안으로 지정 (C 드라이브 용량 절약)
 - `.env.example`을 복사해 `.env` 생성
 
-Playwright는 PC에 설치된 크롬을 그대로 쓰므로 별도 브라우저 다운로드가 없습니다. 크롬 경로가 다르면 `config.yaml`의 `chrome_path`를 고치세요.
+Playwright는 PC에 설치된 크롬을 그대로 쓰므로 별도 브라우저 다운로드가 없습니다. 크롬은 기본 설치 위치에서 자동으로 찾고, 다른 곳에 설치했다면 `config.yaml`의 `chrome_path`에 경로를 넣으세요.
 
 ### API 키 넣기 (`.env`)
 
@@ -71,7 +71,7 @@ run.bat
 
 | 항목 | 설명 |
 |---|---|
-| `profiles` | 계정 이름과 크롬 프로필 폴더 |
+| `profiles` | 계정 이름과 크롬 프로필 폴더 (프로젝트 폴더 기준 상대경로) |
 | `profile_assignment` | `round_robin`이면 자동 순환 배정 토글이 켜진 채로 시작 |
 | `comment` | 글자 수 범위(40~120자), 꼭 들어갈 브랜드명(운명원) |
 | `limits.daily_max_comments` | 하루 게시 상한 (KST 날짜 기준 성공 건수) |

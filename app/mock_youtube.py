@@ -23,8 +23,8 @@ def _video(vid: str) -> dict:
     if vid not in _video_cache:
         try:
             _video_cache[vid] = youtube_api.get_video(vid)
-        except Exception:  # 키 없음/오프라인이어도 페이지는 뜨게
-            _video_cache[vid] = {"id": vid, "title": f"영상 {vid}", "channel": "", "thumbnail": "", "description": ""}
+        except Exception:  # 키 없음/오프라인이어도 페이지는 뜨게 (임시값은 캐시하지 않아 다음에 다시 시도)
+            return {"id": vid, "title": f"영상 {vid}", "channel": "", "thumbnail": "", "description": ""}
     return _video_cache[vid]
 
 

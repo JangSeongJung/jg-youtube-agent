@@ -8,5 +8,6 @@ profiles/
 # 환경
 .venv/
 .pw-browsers/
+.pip-cache/
 __pycache__/
 *.pyc

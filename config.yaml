@@ -1,7 +1,7 @@
-profiles:
-  - { name: 유튜브1, dir: 'D:\Cowork\jg-youtube-agent\profiles\youtube1' }
-  - { name: 유튜브2, dir: 'D:\Cowork\jg-youtube-agent\profiles\youtube2' }
-  - { name: 유튜브3, dir: 'D:\Cowork\jg-youtube-agent\profiles\youtube3' }
+profiles:   # dir 은 프로젝트 폴더 기준 상대경로 (절대경로도 가능)
+  - { name: 유튜브1, dir: 'profiles\youtube1' }
+  - { name: 유튜브2, dir: 'profiles\youtube2' }
+  - { name: 유튜브3, dir: 'profiles\youtube3' }
 profile_assignment: round_robin   # round_robin | manual
 
 comment: { min_chars: 40, max_chars: 120, brand: 운명원 }
@@ -22,4 +22,5 @@ posting:
   typing_delay_ms: [60, 180]
   close_after_sec: 3
 
-chrome_path: 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
+# 비워두면 기본 설치 위치(Program Files / Program Files (x86) / 사용자 AppData)에서 자동으로 찾음
+chrome_path: ''

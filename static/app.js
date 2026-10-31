@@ -83,19 +83,24 @@ function selectVideo(idOrLink, el) {
 }
 
 // ── ② 분석 + 초안 ──
+let draftSeq = 0;   // 분석 중에 다른 영상을 고르면 늦게 도착한 이전 결과는 버린다
 async function makeDraft(idOrLink, keepAnalysis = false) {
+  const seq = ++draftSeq;
   $("#draftEmpty").hidden = true; $("#draftBox").hidden = true; $("#loading2").hidden = false;
+  const analysis = keepAnalysis ? state.analysis : null;
   state.video = null; state.passed = false; updatePostBtn();
   try {
-    const body = { video: idOrLink, analysis: keepAnalysis ? state.analysis : null };
+    const body = { video: idOrLink, analysis };
     const d = await api("/api/draft", { method: "POST", body: JSON.stringify(body) });
+    if (seq !== draftSeq) return;
     state.video = d.video; state.analysis = d.analysis;
     renderDraft(d);
     checkCanPost();
   } catch (e) {
+    if (seq !== draftSeq) return;
     $("#draftEmpty").hidden = false;
     $("#draftEmpty").innerHTML = `<span class="err">${esc(e.message)}</span>`;
-  } finally { $("#loading2").hidden = true; }
+  } finally { if (seq === draftSeq) $("#loading2").hidden = true; }
 }
 
 function renderDraft(d) {
@@ -127,8 +132,10 @@ let checkTimer;
 $("#comment").oninput = () => {
   clearTimeout(checkTimer);
   checkTimer = setTimeout(async () => {
-    const { fails } = await api("/api/check", { method: "POST", body: JSON.stringify({ text: $("#comment").value }) });
-    showChecks(fails, 0);
+    try {
+      const { fails } = await api("/api/check", { method: "POST", body: JSON.stringify({ text: $("#comment").value }) });
+      showChecks(fails, 0);
+    } catch (e) { showChecks([`검사 실패: ${e.message}`], 0); }
   }, 300);
 };
 

@@ -18,7 +18,23 @@ def load_config() -> dict:
         return yaml.safe_load(f)
 
 
+def find_chrome(configured: str | None) -> str:
+    """config 의 chrome_path 가 비었거나 없는 경로면 기본 설치 위치에서 찾는다."""
+    candidates = [configured] if configured else []
+    for base in (os.getenv("PROGRAMFILES"), os.getenv("PROGRAMFILES(X86)"), os.getenv("LOCALAPPDATA")):
+        if base:
+            candidates.append(str(Path(base) / "Google" / "Chrome" / "Application" / "chrome.exe"))
+    for c in candidates:
+        if Path(c).exists():
+            return c
+    raise RuntimeError("크롬(chrome.exe)을 찾지 못했습니다. config.yaml 의 chrome_path 에 경로를 넣어주세요.")
+
+
 settings = load_config()
+# 프로필 폴더는 프로젝트 폴더 기준 상대경로로 적을 수 있다 (다른 PC에 받아도 그대로 동작)
+for _p in settings["profiles"]:
+    _p["dir"] = str((ROOT / _p["dir"]).resolve())
+settings["chrome_path"] = find_chrome(settings.get("chrome_path"))
 
 
 def get_profile(name: str) -> dict:
