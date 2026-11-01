@@ -101,4 +101,8 @@ def write_comment(video: dict, analysis: dict, feedback: list[str] | None = None
             f"key_moments: {json.dumps(analysis['key_moments'], ensure_ascii=False)}")
     if feedback:
         user += "\n\n이전 초안이 다음 이유로 탈락했다. 고쳐서 다시 써라:\n- " + "\n- ".join(feedback)
-    return _call(system, user).strip().strip('"')
+    text = _call(system, user).strip()
+    # 댓글 전체를 감싼 따옴표만 벗긴다 (발언 인용으로 시작·끝나는 따옴표는 남김)
+    if len(text) >= 2 and text[0] == text[-1] == '"' and text.count('"') == 2:
+        text = text[1:-1].strip()
+    return text
